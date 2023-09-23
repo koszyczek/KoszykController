@@ -1,0 +1,11 @@
+﻿{
+  "profiles": {
+    "Game": {
+      "commandName": "Executable",
+      "workingDirectory": "C:\\Users\\Bridget\\Documents\\Flax Projects\\koszykController",
+      "executablePath": "C:\\Program Files (x86)\\Flax\\Flax_1.6\\Binaries\\Editor\\Win64\\Development\\FlaxEditor.exe",
+      "commandLineArgs": "-project \"C:\\Users\\Bridget\\Documents\\Flax Projects\\koszykController\"",
+      "nativeDebugging": false
+    }
+  }
+}
