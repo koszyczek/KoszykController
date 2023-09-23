@@ -18,7 +18,7 @@ public class HeadBob : Script
     public AudioSource audio;// The array of AudioClips to play on each bob
     public AudioSource LandingAudio; // The AudioSource to play the landing sound
 
-    
+
 
     private AudioSource _audioSource; // The AudioSource component
     public CharacterController _characterController; // Reference to the CharacterController
@@ -37,6 +37,7 @@ public class HeadBob : Script
 
         // Get the CharacterController component
 
+
         // Store the original rotation of the camera
         _originalRotation = Actor.Orientation;
     }
@@ -50,50 +51,60 @@ public class HeadBob : Script
 
         Vector3 localPosition = Actor.LocalPosition;
 
-        if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
+        if (_characterController.IsGrounded)
         {
-            _timer = 0.0f;
-        }
-        else
-        {
-            waveslice = Mathf.Sin(_timer);
-            _timer = _timer + (IsSprinting() ? SprintBobbingSpeed : BobbingSpeed) * Time.DeltaTime; // Use SprintBobbingSpeed if sprinting
-            if (_timer > Mathf.Pi * 2)
+            if (Mathf.Abs(horizontal) == 0 && Mathf.Abs(vertical) == 0)
             {
-                _timer = _timer - (Mathf.Pi * 2);
-
-                // Only play the bobbing sound if the player is grounded
-                if (_characterController.IsGrounded && BobSounds.Length > 0)
+                _timer = 0.0f;
+            }
+            else
+            {
+                waveslice = Mathf.Sin(_timer);
+                _timer = _timer + (IsSprinting() ? SprintBobbingSpeed : BobbingSpeed) * Time.DeltaTime; // Use SprintBobbingSpeed if sprinting
+                if (_timer > Mathf.Pi * 2)
                 {
-                    int randomIndex;
-                    do
+                    _timer = _timer - (Mathf.Pi * 2);
+
+                    // Only play the bobbing sound if the player is grounded
+                    if (BobSounds.Length > 0)
                     {
-                        randomIndex = _random.Next(BobSounds.Length);
-                    } while (randomIndex == _lastPlayedSoundIndex); // Ensure we don't play the same sound twice
-                    _lastPlayedSoundIndex = randomIndex;
+                        int randomIndex;
+                        do
+                        {
+                            randomIndex = _random.Next(BobSounds.Length);
+                        } while (randomIndex == _lastPlayedSoundIndex); // Ensure we don't play the same sound twice
+                        _lastPlayedSoundIndex = randomIndex;
 
-                    // Set the selected sound as the source
-                    _audioSource.Clip = BobSounds[randomIndex];
+                        // Set the selected sound as the source
+                        _audioSource.Clip = BobSounds[randomIndex];
 
-                    // Play the sound
-                    _audioSource.Play();
+                        // Play the sound
+                        _audioSource.Play();
+                    }
                 }
             }
-        }
 
-        if (waveslice != 0)
-        {
-            float translateChange = waveslice * BobbingAmount;
-            float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
-            totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
-            translateChange = totalAxes * translateChange;
+            if (waveslice != 0)
+            {
+                float translateChange = waveslice * BobbingAmount;
+                float totalAxes = Mathf.Abs(horizontal) + Mathf.Abs(vertical);
+                totalAxes = Mathf.Clamp(totalAxes, 0.0f, 1.0f);
+                translateChange = totalAxes * translateChange;
 
-            // Apply the bobbing effect
-            localPosition.Y = _originalPosition.Y + translateChange;
-        }
-        else
-        {
-            localPosition.Y = _originalPosition.Y;
+                // Apply the bobbing effect
+                localPosition.Y = _originalPosition.Y + translateChange;
+            }
+            else
+            {
+                localPosition.Y = _originalPosition.Y;
+            }
+
+            // Play the jumping sound if the player is jumping
+            if (IsJumping())
+            {
+                _audioSource.Clip = JumpSound;
+                _audioSource.Play();
+            }
         }
 
         Actor.LocalPosition = localPosition;
@@ -105,27 +116,22 @@ public class HeadBob : Script
             LandingAudio.Play();
         }
 
-        // Play the jumping sound if the player is jumping
-        if (IsJumping() && _characterController.IsGrounded)
-        {
-            _audioSource.Clip = JumpSound;
-            _audioSource.Play();
-        }
-
         // Remember if the player is in the air for the next frame
         _wasInAir = !_characterController.IsGrounded;
 
         // Calculate the lean angle based on the player's movement direction
-        
+      
     }
 
     private bool IsSprinting()
     {
+        // Check if the "Sprint" action is being performed
         return Input.GetAction("Sprint");
     }
 
     private bool IsJumping()
     {
+        // Replace this with your actual condition for jumping
         return Input.GetAction("Jump");
     }
 }
