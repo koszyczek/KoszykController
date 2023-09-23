@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Game.CSharp</name>
+    </assembly>
+    <members>
+        <member name="M:HeadBob.OnStart">
+            <inheritdoc />
+        </member>
+        <member name="M:HeadBob.OnUpdate">
+            <inheritdoc />
+        </member>
+        <member name="M:PlayerScript.AddMovementRotation(System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Adds the movement and rotation to the camera (as input).
+            </summary>
+            <param name="horizontal">The horizontal input.</param>
+            <param name="vertical">The vertical input.</param>
+            <param name="pitch">The pitch rotation input.</param>
+            <param name="yaw">The yaw rotation input.</param>
+        </member>
+    </members>
+</doc>
